@@ -1,0 +1,7 @@
+version: 2
+models:
+  - name: fct_customer_month_features
+    data_tests:
+      - unique_combination:
+          arguments:
+            columns: [customer_id, snapshot_month]

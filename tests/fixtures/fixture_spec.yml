@@ -1,0 +1,23 @@
+# Synthetic fixture for CI. Same table and column names as the real-data load.
+# pk / fk / cast describe the tables for staging and tests; the generator ignores them.
+seed: 1515
+tables:
+  - name: customers
+    rows: 2000
+    pk: customer_id
+    cast: {signup_date: date, churn_date: date}
+    columns:
+      customer_id: {type: id, prefix: CU}
+      signup_date: {type: date, start: 2022-01-01, end: 2024-12-31}
+      plan: {type: choice, values: [prepaid, postpaid_basic, postpaid_plus], p: [0.4, 0.4, 0.2]}
+      monthly_charge_usd: {type: float, low: 10, high: 90}
+      churn_date: {type: expr, expr: "pd.Series(rng.choice(pd.date_range('2025-02-01', '2025-06-30'), n)).where(rng.random(n) < 0.25)"}
+  - name: usage_monthly
+    grid: {parent: customers.customer_id, start: 2025-01-01, end: 2025-06-01, freq: MS, column: usage_month}
+    pk: [customer_id, usage_month]
+    fk: {customer_id: customers.customer_id}
+    cast: {usage_month: date}
+    columns:
+      voice_minutes: {type: int, low: 0, high: 900}
+      data_gb: {type: float, dist: lognormal, mean: 1.5, sigma: 0.8}
+      support_calls: {type: int, low: 0, high: 4}

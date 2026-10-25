@@ -1,0 +1,23 @@
+version: 2
+models:
+- name: stg_bronze__customers
+  columns:
+  - name: customer_id
+    data_tests:
+    - unique
+    - not_null
+- name: stg_bronze__usage_monthly
+  data_tests:
+  - unique_combination:
+      arguments:
+        columns:
+        - customer_id
+        - usage_month
+  columns:
+  - name: customer_id
+    data_tests:
+    - not_null
+    - relationships:
+        arguments:
+          to: ref('stg_bronze__customers')
+          field: customer_id
