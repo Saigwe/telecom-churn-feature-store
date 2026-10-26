@@ -1,0 +1,10 @@
+{
+ "snapshot": "2026-01-01",
+ "customers_scored": 5163,
+ "model_version": 3,
+ "online_vs_offline_mismatches": 0,
+ "expected_churners_next_3m": 490.97363207406875,
+ "top_decile_customers": 517,
+ "top_decile_mean_probability": 0.5685218720592172,
+ "top_decile_month_to_month_share": 0.8355899419729207
+}

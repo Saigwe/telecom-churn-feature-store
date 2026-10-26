@@ -1,7 +1,7 @@
 version: 2
 sources:
 - name: bronze
-  description: Raw tables, loaded by the fixture generator (CI) or the real-data loaders.
+  description: The IBM Telco file as delivered, and the monthly history derived from it (ingestion/load_telco.py).
   tables:
-  - name: customers
+  - name: telco_customers
   - name: usage_monthly

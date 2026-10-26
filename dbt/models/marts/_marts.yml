@@ -1,7 +1,50 @@
 version: 2
+
 models:
   - name: fct_customer_month_features
+    description: Point-in-time feature table, one row per customer per snapshot month. Feast reads it as its offline source.
     data_tests:
       - unique_combination:
           arguments:
             columns: [customer_id, snapshot_month]
+    columns:
+      - name: customer_id
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_telco__customers')
+                field: customer_id
+      - name: feature_cutoff_month
+        data_tests: [not_null]
+      - name: tenure_months
+        data_tests: [not_null]
+  - name: rpt_churn_base_rate
+    columns:
+      - name: snapshot_month
+        data_tests: [unique, not_null]
+
+unit_tests:
+  - name: features_ignore_the_snapshot_month_and_later
+    description: Usage in the snapshot month or after must not reach the features; the label looks forward.
+    model: fct_customer_month_features
+    overrides:
+      vars: {first_snapshot: "2025-03-01", last_snapshot: "2025-03-01", data_end_month: "2025-12-01", label_horizon_months: 3}
+    given:
+      - input: ref('int_customer_lifecycle')
+        rows:
+          - {customer_id: C1, first_month: 2025-01-01, last_active_month: 2025-04-01, churn_month: 2025-05-01}
+      - input: ref('stg_usage__monthly')
+        rows:
+          - {customer_id: C1, usage_month: 2025-01-01, monthly_charge_usd: 10, data_gb: 10, voice_minutes: 100, support_tickets: 0, days_late: 0}
+          - {customer_id: C1, usage_month: 2025-02-01, monthly_charge_usd: 20, data_gb: 20, voice_minutes: 100, support_tickets: 1, days_late: 0}
+          - {customer_id: C1, usage_month: 2025-03-01, monthly_charge_usd: 999, data_gb: 999, voice_minutes: 999, support_tickets: 9, days_late: 9}
+          - {customer_id: C1, usage_month: 2025-04-01, monthly_charge_usd: 999, data_gb: 999, voice_minutes: 999, support_tickets: 9, days_late: 9}
+      - input: ref('stg_telco__customers')
+        rows:
+          - {customer_id: C1, contract: Month-to-month}
+    expect:
+      rows:
+        - {customer_id: C1, snapshot_month: 2025-03-01, feature_cutoff_month: 2025-02-01, tenure_months: 2,
+           total_charges_to_date: 30, charge_last_month: 20, data_gb_avg_3m: 15, support_tickets_3m: 1,
+           churned_next_3m: true}

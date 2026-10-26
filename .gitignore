@@ -8,3 +8,5 @@ dbt/logs/
 dbt/dbt_packages/
 .user.yml
 .env
+mlruns/
+mlflow.db

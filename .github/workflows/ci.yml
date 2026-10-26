@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      MLFLOW_DISABLE_AGENT_HINT: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -15,5 +17,13 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
-      - name: Fixture pipeline (synthetic fixture -> dbt build with tests)
+      - name: Fixture pipeline (Telco-format CSV -> dbt point-in-time features -> Feast -> MLflow -> scoring -> Evidently -> tests)
         run: make fixture-all
+      - name: Model and drift summary
+        if: always()
+        run: cat results/model_comparison.md results/scoring.md results/drift.md >> "$GITHUB_STEP_SUMMARY" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: drift-report
+          path: results/drift_report.html

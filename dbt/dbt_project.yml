@@ -12,11 +12,22 @@ target-path: target
 clean-targets:
 - target
 - dbt_packages
+
+vars:
+  # Snapshots run monthly. A snapshot's features use only months BEFORE it; its label looks LABEL_HORIZON months ahead.
+  first_snapshot: "2025-01-01"
+  last_snapshot: "2026-01-01"       # the scoring snapshot: features through December 2025, label not yet known
+  data_end_month: "2025-12-01"      # last month with observed activity
+  label_horizon_months: 3
+
 models:
   telecom_churn_feature_store:
     staging:
       +schema: silver
       +materialized: view
+    intermediate:
+      +schema: silver
+      +materialized: table
     marts:
       +schema: gold
       +materialized: table

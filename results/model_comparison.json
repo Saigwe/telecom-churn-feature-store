@@ -1,0 +1,33 @@
+{
+ "champion": "hgb_all",
+ "results": {
+  "logreg_real": {
+   "roc_auc": 0.8421373822979462,
+   "pr_auc": 0.316785960629329,
+   "lift_top_decile": 4.223493530955551,
+   "brier": 0.060340865978879735
+  },
+  "hgb_real": {
+   "roc_auc": 0.8149874489795114,
+   "pr_auc": 0.3085320741897444,
+   "lift_top_decile": 3.9310316571215616,
+   "brier": 0.06623076404815938
+  },
+  "hgb_all": {
+   "roc_auc": 0.9134441594483196,
+   "pr_auc": 0.6213996767642798,
+   "lift_top_decile": 6.41695758471047,
+   "brier": 0.044229804587024836
+  },
+  "hgb_leaky": {
+   "roc_auc": 0.8528115931153857,
+   "pr_auc": 0.5154906931685244,
+   "lift_top_decile": 4.774009999348943,
+   "brier": 0.05487728815474347
+  }
+ },
+ "feast_vs_dbt_mismatches": 0,
+ "train_rows": 26015,
+ "test_rows": 15326,
+ "test_base_rate": 0.07588411849145243
+}
