@@ -105,7 +105,7 @@ mlflow ui --backend-store-uri sqlite:///mlflow.db   # browse runs and the regist
 - [x] Drift report with Evidently, with a control split; training-serving diagram in the README
 - [ ] Next-best-offer: uplift model on a simulated retention campaign
 - [ ] Serve the champion behind a REST endpoint reading Feast online features
-- [ ] 3-minute Loom walkthrough
+- [ ] 3-minute Loom walkthrough ([script ready](docs/walkthrough.md))
 
 ## Interview topics this project prepares
 - Point-in-time correctness and leakage, and how to measure what leakage costs
